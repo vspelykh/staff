@@ -1,0 +1,30 @@
+server:
+  port: ${SERVER_PORT}
+
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    generate-ddl: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        connection:
+          release_mode: after_transaction
+        log:
+          sql: true
+        format_sql: true
+        c3p0:
+          min_size: 5
+          max_size: 20

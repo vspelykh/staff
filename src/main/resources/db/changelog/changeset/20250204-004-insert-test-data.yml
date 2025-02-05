@@ -1,0 +1,98 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: user
+      changes:
+        - insert:
+            tableName: employee
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: first_name, value: "John" }
+              - column: { name: middle_name, value: "A." }
+              - column: { name: last_name, value: "Doe" }
+              - column: { name: birth_date, value: "1980-05-15" }
+              - column: { name: hire_date, value: "2010-06-01" }
+              - column: { name: type, value: "MANAGER" }
+
+        - insert:
+            tableName: employee
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: first_name, value: "Alice" }
+              - column: { name: middle_name, value: "B." }
+              - column: { name: last_name, value: "Smith" }
+              - column: { name: birth_date, value: "1990-09-25" }
+              - column: { name: hire_date, value: "2015-03-10" }
+              - column: { name: type, value: "MANAGER" }
+
+        - insert:
+            tableName: employee
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: first_name, value: "Michael" }
+              - column: { name: middle_name, value: "J." }
+              - column: { name: last_name, value: "Williams" }
+              - column: { name: birth_date, value: "1992-03-12" }
+              - column: { name: hire_date, value: "2020-07-10" }
+              - column: { name: type, value: "WORKER" }
+
+        - insert:
+            tableName: employee
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: first_name, value: "Gabriel" }
+              - column: { name: middle_name, value: "J." }
+              - column: { name: last_name, value: "Williams" }
+              - column: { name: birth_date, value: "1992-03-12" }
+              - column: { name: hire_date, value: "2020-07-10" }
+              - column: { name: type, value: "WORKER" }
+
+        - insert:
+            tableName: employee
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: first_name, value: "Valery" }
+              - column: { name: middle_name, value: "J." }
+              - column: { name: last_name, value: "Williams" }
+              - column: { name: birth_date, value: "1992-03-12" }
+              - column: { name: hire_date, value: "2020-07-10" }
+              - column: { name: type, value: "WORKER" }
+
+        - insert:
+            tableName: employee
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: first_name, value: "Ethan" }
+              - column: { name: middle_name, value: "P." }
+              - column: { name: last_name, value: "Moore" }
+              - column: { name: birth_date, value: "1995-05-17" }
+              - column: { name: hire_date, value: "2019-02-22" }
+              - column: { name: type, value: "OTHER" }
+
+        - insert:
+            tableName: employee_details
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: employee_id, valueComputed: "(SELECT id FROM employee WHERE first_name = 'Ethan' AND last_name = 'Moore')" }
+              - column: { name: description, value: "Director" }
+
+        - insert:
+            tableName: manager_employee
+            columns:
+              - column: { name: manager_id, valueComputed: "(SELECT id FROM employee WHERE first_name = 'John' AND last_name = 'Doe')" }
+              - column: { name: employee_id, valueComputed: "(SELECT id FROM employee WHERE first_name = 'Michael' AND last_name = 'Williams')" }
+              - column: { name: assigned_date, valueComputed: "NOW()" }
+
+        - insert:
+            tableName: manager_employee
+            columns:
+              - column: { name: manager_id, valueComputed: "(SELECT id FROM employee WHERE first_name = 'John' AND last_name = 'Doe')" }
+              - column: { name: employee_id, valueComputed: "(SELECT id FROM employee WHERE first_name = 'Gabriel' AND last_name = 'Williams')" }
+              - column: { name: assigned_date, valueComputed: "NOW()" }
+
+        - insert:
+            tableName: manager_employee
+            columns:
+              - column: { name: manager_id, valueComputed: "(SELECT id FROM employee WHERE first_name = 'Alice' AND last_name = 'Smith')" }
+              - column: { name: employee_id, valueComputed: "(SELECT id FROM employee WHERE first_name = 'Valery' AND last_name = 'Williams')" }
+              - column: { name: assigned_date, valueComputed: "NOW()" }

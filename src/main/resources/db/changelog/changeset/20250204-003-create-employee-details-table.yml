@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 00e-create-employee-details-table
+      author: v.pelykh
+      changes:
+        - createTable:
+            tableName: employee_details
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: employee_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_employee_details_employee
+                    references: employee(id)
+              - column:
+                  name: description
+                  type: TEXT
