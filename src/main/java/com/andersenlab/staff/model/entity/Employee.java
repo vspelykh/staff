@@ -16,6 +16,7 @@ import java.util.Objects;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 @DiscriminatorValue("WORKER")
+@Builder
 public class Employee extends BaseEntity {
 
     @Column(name = "first_name", nullable = false)
@@ -38,6 +39,9 @@ public class Employee extends BaseEntity {
     @Column(name="type", insertable = false, updatable = false)
     @Enumerated(EnumType.STRING)
     private EmployeeType type;
+
+    @OneToOne(mappedBy = "employee")
+    private EmployeeDetails employeeDetails;
 
     @Override
     public boolean equals(Object o) {
