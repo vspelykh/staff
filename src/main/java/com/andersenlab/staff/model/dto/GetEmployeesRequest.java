@@ -32,4 +32,6 @@ public class GetEmployeesRequest {
     private String firstName;
 
     private String lastName;
+
+    private Boolean active;
 }

@@ -24,19 +24,22 @@ public class EmployeeDto extends RepresentationModel<EmployeeDto> {
     private Date hireDate;
     private EmployeeType type;
     private String description;
+    private boolean active;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof EmployeeDto that)) return false;
         if (!super.equals(o)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(firstName, that.firstName)
-                && Objects.equals(middleName, that.middleName)
-                && Objects.equals(lastName, that.lastName);
+        return active == that.active && Objects.equals(id, that.id)
+                && Objects.equals(firstName, that.firstName) && Objects.equals(middleName, that.middleName)
+                && Objects.equals(lastName, that.lastName) && Objects.equals(birthDate, that.birthDate)
+                && Objects.equals(hireDate, that.hireDate) && type == that.type
+                && Objects.equals(description, that.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, firstName, middleName, lastName);
+        return Objects.hash(super.hashCode(), id, firstName, middleName, lastName, birthDate, hireDate, type, description, active);
     }
 }

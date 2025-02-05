@@ -36,9 +36,12 @@ public class Employee extends BaseEntity {
     @Temporal(TemporalType.DATE)
     private Date hireDate;
 
-    @Column(name="type", insertable = false, updatable = false)
+    @Column(name = "type", insertable = false, updatable = false)
     @Enumerated(EnumType.STRING)
     private EmployeeType type;
+
+    @Column(name = "active", nullable = false)
+    private boolean active;
 
     @OneToOne(mappedBy = "employee")
     private EmployeeDetails employeeDetails;
@@ -47,13 +50,14 @@ public class Employee extends BaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Employee employee)) return false;
-        return Objects.equals(firstName, employee.firstName) && Objects.equals(middleName, employee.middleName)
-                && Objects.equals(lastName, employee.lastName) && Objects.equals(birthDate, employee.birthDate)
-                && Objects.equals(hireDate, employee.hireDate) && type == employee.type;
+        return active == employee.active && Objects.equals(firstName, employee.firstName)
+                && Objects.equals(middleName, employee.middleName) && Objects.equals(lastName, employee.lastName)
+                && Objects.equals(birthDate, employee.birthDate) && Objects.equals(hireDate, employee.hireDate)
+                && type == employee.type && Objects.equals(employeeDetails, employee.employeeDetails);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, middleName, lastName, birthDate, hireDate, type);
+        return Objects.hash(firstName, middleName, lastName, birthDate, hireDate, type, active, employeeDetails);
     }
 }

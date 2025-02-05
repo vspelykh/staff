@@ -119,7 +119,7 @@ class EmployeeServiceImplTest {
     void givenEmployeeExists_whenGetEmployeeById_thenReturnEmployeeDto() {
         UUID employeeId = UUID.randomUUID();
         employee.setId(employeeId);
-        when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
+        when(employeeRepository.findByIdAndActiveIsTrue(employeeId)).thenReturn(Optional.of(employee));
 
         EmployeeDto result = employeeService.getEmployeeById(employeeId);
 
@@ -131,8 +131,30 @@ class EmployeeServiceImplTest {
     @Test
     void givenEmployeeDoesNotExist_whenGetEmployeeById_thenThrowResourceNotFoundException() {
         UUID employeeId = UUID.randomUUID();
-        when(employeeRepository.findById(employeeId)).thenReturn(Optional.empty());
+        when(employeeRepository.findByIdAndActiveIsTrue(employeeId)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> employeeService.getEmployeeById(employeeId));
+    }
+
+    @Test
+    void givenEmployeeExists_whenDeactivateEmployee_thenEmployeeDeactivated() {
+        UUID employeeId = UUID.randomUUID();
+        employee.setId(employeeId);
+        when(employeeRepository.findByIdAndActiveIsTrue(employeeId)).thenReturn(Optional.of(employee));
+
+        employeeService.deactivateEmployee(employeeId);
+
+        assertFalse(employee.isActive(), "Employee should be deactivated");
+        verify(employeeRepository, times(1)).save(employee);
+    }
+
+    @Test
+    void givenEmployeeDoesNotExist_whenDeactivateEmployee_thenThrowResourceNotFoundException() {
+        UUID employeeId = UUID.randomUUID();
+        when(employeeRepository.findByIdAndActiveIsTrue(employeeId)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> employeeService.deactivateEmployee(employeeId));
+
+        verify(employeeRepository, never()).save(any());
     }
 }

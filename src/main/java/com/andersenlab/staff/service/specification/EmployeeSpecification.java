@@ -17,6 +17,7 @@ public class EmployeeSpecification implements Specification<Employee> {
     private static final String FIRST_NAME = "firstName";
     private static final String LAST_NAME = "lastName";
     private static final String HIRE_DATE = "hireDate";
+    private static final String ACTIVE = "active";
 
     private GetEmployeesRequest request;
 
@@ -26,6 +27,7 @@ public class EmployeeSpecification implements Specification<Employee> {
 
         predicate = applyFirstNameFilter(root, criteriaBuilder, predicate);
         predicate = applyLastNameFilter(root, criteriaBuilder, predicate);
+        predicate = applyActiveFilter(root, criteriaBuilder, predicate); // Применяем фильтр по активности
         applySorting(root, query, criteriaBuilder);
 
         return predicate;
@@ -45,6 +47,16 @@ public class EmployeeSpecification implements Specification<Employee> {
                     criteriaBuilder.like(criteriaBuilder.lower(root.get(LAST_NAME)), "%" + request.getLastName().toLowerCase() + "%"));
         }
         return predicate;
+    }
+
+    private Predicate applyActiveFilter(Root<Employee> root, CriteriaBuilder criteriaBuilder, Predicate predicate) {
+        if (request.getActive() != null) {
+            return criteriaBuilder.and(predicate,
+                    criteriaBuilder.equal(root.get(ACTIVE), request.getActive()));
+        } else {
+            return criteriaBuilder.and(predicate,
+                    criteriaBuilder.equal(root.get(ACTIVE), Boolean.TRUE));
+        }
     }
 
     private void applySorting(Root<Employee> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {

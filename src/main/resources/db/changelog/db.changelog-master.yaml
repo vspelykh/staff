@@ -7,3 +7,7 @@ databaseChangeLog:
       file: db/changelog/changeset/20250204-003-create-employee-details-table.yml
   - include:
       file: db/changelog/changeset/20250204-004-insert-test-data.yml
+  - include:
+      file: db/changelog/changeset/20250205-001-add-active-field-to-employee.yml
+  - include:
+      file: db/changelog/changeset/20250205-002-create-employee-index.yml

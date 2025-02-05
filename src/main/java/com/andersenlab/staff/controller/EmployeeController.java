@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,5 +49,12 @@ public class EmployeeController {
         return EntityModel.of(employee,
                 linkTo(methodOn(EmployeeController.class).getEmployeeById(id)).withSelfRel()
         );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEmployeeById(@PathVariable UUID id) {
+        log.info("REST request to delete employee : {}", id);
+        employeeService.deactivateEmployee(id);
+        return ResponseEntity.noContent().build();
     }
 }
