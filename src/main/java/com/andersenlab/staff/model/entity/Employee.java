@@ -15,6 +15,7 @@ import java.util.Objects;
 @ToString
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("WORKER")
 public class Employee extends BaseEntity {
 
     @Column(name = "first_name", nullable = false)
@@ -34,7 +35,7 @@ public class Employee extends BaseEntity {
     @Temporal(TemporalType.DATE)
     private Date hireDate;
 
-    @Column(insertable = false, updatable = false)
+    @Column(name="type", insertable = false, updatable = false)
     @Enumerated(EnumType.STRING)
     private EmployeeType type;
 
