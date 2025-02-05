@@ -48,12 +48,7 @@ This is a Spring Boot application designed for an assessment task. The applicati
 - **MapStruct** (DTO mapping)
 - **JUnit 5 / Mockito** (Unit and integration testing)
 
-## **Database Schema (Simplified)**
-
-The system uses inheritance or composition for structuring employees in the database:
-
-- **Approach 1: Inheritance (****`@MappedSuperclass`**** or ****`@Inheritance`****)**
-- **Approach 2: Composition (****`@Embedded`****)**
+## **Database Schema**
 
 ## **API Endpoints**
 
@@ -72,19 +67,19 @@ The system uses inheritance or composition for structuring employees in the data
 ### **1. Clone the repository:**
 
 ```bash
- git clone https://github.com/your-repository/employee-management.git
+ git clone https://github.com/vspelykh/staff.git
  cd employee-management
 ```
 
 ### **2. Configure the database:**
 
-Update `application.yml` or `application.properties` with your database credentials:
+Update `application.yml` with your database credentials:
 
 ```yaml
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/employee_db
-    username: user
+    url: jdbc:postgresql://localhost:5432/staff_db
+    username: postgres
     password: password
 ```
 
@@ -100,19 +95,5 @@ mvn spring-boot:run
 Use Postman or `curl` to test API endpoints.
 
 ```bash
-curl -X GET http://localhost:8080/employees
+curl -X GET http://localhost:8900/echo
 ```
-
-## **Future Improvements:**
-
-- Role-based access control (RBAC)
-- Pagination for employee lists
-- Advanced filtering options
-- GraphQL API support
-
----
-
-This project serves as a technical assessment and can be further extended based on real-world needs.
-
-напиши так, чтобы я мог скопировать вместе с разметкой md
-
