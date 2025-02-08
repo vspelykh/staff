@@ -1,8 +1,7 @@
 package com.andersenlab.staff.controller;
 
 import com.andersenlab.staff.model.assembler.EmployeeModelAssembler;
-import com.andersenlab.staff.model.dto.EmployeeDto;
-import com.andersenlab.staff.model.dto.GetEmployeesRequest;
+import com.andersenlab.staff.model.dto.*;
 import com.andersenlab.staff.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +11,7 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -43,12 +38,51 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    public EntityModel<EmployeeDto> getEmployeeById(@PathVariable UUID id) {
+    public ResponseEntity<EntityModel<EmployeeDto>> getEmployeeById(@PathVariable UUID id) {
         log.info("REST request to get employee : {}", id);
+
         EmployeeDto employee = employeeService.getEmployeeById(id);
-        return EntityModel.of(employee,
+        EntityModel<EmployeeDto> entityModel = EntityModel.of(employee,
                 linkTo(methodOn(EmployeeController.class).getEmployeeById(id)).withSelfRel()
         );
+
+        return ResponseEntity.ok(entityModel);
+    }
+
+    @PostMapping
+    public ResponseEntity<EntityModel<EmployeeDto>> createEmployee(@RequestBody CreateEmployeeRequest request) {
+        log.info("REST request to create employee : {}", request);
+        EmployeeDto employee = employeeService.createEmployee(request);
+
+        EntityModel<EmployeeDto> entityModel = EntityModel.of(employee,
+                linkTo(methodOn(EmployeeController.class).getEmployeeById(employee.getId())).withSelfRel()
+        );
+
+        return ResponseEntity
+                .created(linkTo(methodOn(EmployeeController.class).getEmployeeById(employee.getId())).toUri())
+                .body(entityModel);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<EntityModel<EmployeeDto>> updateEmployee(
+            @PathVariable UUID id, @RequestBody UpdateEmployeeRequest request) {
+        log.info("REST request to update employee with id: {} : {}", id, request);
+        EmployeeDto updatedEmployee = employeeService.updateEmployee(id, request);
+        EntityModel<EmployeeDto> entityModel = EntityModel.of(updatedEmployee,
+                linkTo(methodOn(EmployeeController.class).getEmployeeById(updatedEmployee.getId())).withSelfRel()
+        );
+        return ResponseEntity.ok().body(entityModel);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<EntityModel<EmployeeDto>> changeEmployeeType(
+            @PathVariable UUID id, @RequestBody UpdateEmployeeType request) {
+        log.info("REST request to update employee type with id: {} : {}", id, request);
+
+        EmployeeDto updatedEmployee = employeeService.updateEmployeeType(id, request);
+        EntityModel<EmployeeDto> entityModel = EntityModel.of(updatedEmployee);
+
+        return ResponseEntity.ok(entityModel);
     }
 
     @DeleteMapping("/{id}")

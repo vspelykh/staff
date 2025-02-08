@@ -43,7 +43,7 @@ public class Employee extends BaseEntity {
     @Column(name = "active", nullable = false)
     private boolean active;
 
-    @OneToOne(mappedBy = "employee")
+    @OneToOne(mappedBy = "employee", cascade = CascadeType.PERSIST)
     private EmployeeDetails employeeDetails;
 
     @Override

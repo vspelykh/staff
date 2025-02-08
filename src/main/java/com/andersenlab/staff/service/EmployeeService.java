@@ -1,15 +1,14 @@
 package com.andersenlab.staff.service;
 
 import com.andersenlab.staff.exception.ResourceNotFoundException;
-import com.andersenlab.staff.model.dto.EmployeeDto;
-import com.andersenlab.staff.model.dto.GetEmployeesRequest;
+import com.andersenlab.staff.model.dto.*;
 import org.springframework.data.domain.Page;
 
 import java.util.UUID;
 
 /**
  * Service interface for managing employee-related operations.
- * Provides methods to retrieve and update employee information.
+ * Provides methods to retrieve, create, update, and deactivate employees.
  */
 public interface EmployeeService {
 
@@ -29,6 +28,34 @@ public interface EmployeeService {
      * @throws ResourceNotFoundException if no employee with the given id is found
      */
     EmployeeDto getEmployeeById(UUID id);
+
+    /**
+     * Creates a new employee based on the provided request data.
+     *
+     * @param request the {@link CreateEmployeeRequest} containing employee details
+     * @return the created {@link EmployeeDto} object
+     */
+    EmployeeDto createEmployee(CreateEmployeeRequest request);
+
+    /**
+     * Updates an existing employee's details.
+     *
+     * @param id the UUID of the employee to update
+     * @param request the {@link UpdateEmployeeRequest} containing updated employee details
+     * @return the updated {@link EmployeeDto} object
+     * @throws ResourceNotFoundException if no employee with the given id is found
+     */
+    EmployeeDto updateEmployee(UUID id, UpdateEmployeeRequest request);
+
+    /**
+     * Updates the employee's type (e.g., Worker, Manager, Executive).
+     *
+     * @param id the UUID of the employee whose type is to be updated
+     * @param request the {@link UpdateEmployeeType} containing the new employee type
+     * @return the updated {@link EmployeeDto} object with the new employee type
+     * @throws ResourceNotFoundException if no employee with the given id is found
+     */
+    EmployeeDto updateEmployeeType(UUID id, UpdateEmployeeType request);
 
     /**
      * Deactivates an employee by setting their 'active' status to false.

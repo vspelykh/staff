@@ -79,6 +79,7 @@ databaseChangeLog:
         - insert:
             tableName: manager_employee
             columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
               - column: { name: manager_id, valueComputed: "(SELECT id FROM employee WHERE first_name = 'John' AND last_name = 'Doe')" }
               - column: { name: employee_id, valueComputed: "(SELECT id FROM employee WHERE first_name = 'Michael' AND last_name = 'Williams')" }
               - column: { name: assigned_date, valueComputed: "NOW()" }
@@ -86,6 +87,7 @@ databaseChangeLog:
         - insert:
             tableName: manager_employee
             columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
               - column: { name: manager_id, valueComputed: "(SELECT id FROM employee WHERE first_name = 'John' AND last_name = 'Doe')" }
               - column: { name: employee_id, valueComputed: "(SELECT id FROM employee WHERE first_name = 'Gabriel' AND last_name = 'Williams')" }
               - column: { name: assigned_date, valueComputed: "NOW()" }
@@ -93,6 +95,7 @@ databaseChangeLog:
         - insert:
             tableName: manager_employee
             columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
               - column: { name: manager_id, valueComputed: "(SELECT id FROM employee WHERE first_name = 'Alice' AND last_name = 'Smith')" }
               - column: { name: employee_id, valueComputed: "(SELECT id FROM employee WHERE first_name = 'Valery' AND last_name = 'Williams')" }
               - column: { name: assigned_date, valueComputed: "NOW()" }

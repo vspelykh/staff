@@ -27,7 +27,7 @@ public class EmployeeSpecification implements Specification<Employee> {
 
         predicate = applyFirstNameFilter(root, criteriaBuilder, predicate);
         predicate = applyLastNameFilter(root, criteriaBuilder, predicate);
-        predicate = applyActiveFilter(root, criteriaBuilder, predicate); // Применяем фильтр по активности
+        predicate = applyActiveFilter(root, criteriaBuilder, predicate);
         applySorting(root, query, criteriaBuilder);
 
         return predicate;

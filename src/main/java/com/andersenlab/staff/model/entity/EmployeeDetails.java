@@ -12,8 +12,9 @@ import lombok.*;
 @ToString
 public class EmployeeDetails extends BaseEntity {
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
+    @ToString.Exclude
     private Employee employee;
 
     @Column(columnDefinition = "TEXT")

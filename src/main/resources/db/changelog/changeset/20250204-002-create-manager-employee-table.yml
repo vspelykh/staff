@@ -7,6 +7,12 @@ databaseChangeLog:
             tableName: manager_employee
             columns:
               - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
                   name: manager_id
                   type: UUID
                   constraints:
