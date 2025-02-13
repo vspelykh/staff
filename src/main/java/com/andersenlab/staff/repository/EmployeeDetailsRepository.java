@@ -13,4 +13,5 @@ public interface EmployeeDetailsRepository extends JpaRepository<EmployeeDetails
     Optional<EmployeeDetails> findByEmployeeId(UUID employeeId);
 
     void deleteByEmployeeId(UUID employeeId);
+
 }

@@ -79,10 +79,8 @@ public class EmployeeController {
             @PathVariable UUID id, @RequestBody UpdateEmployeeType request) {
         log.info("REST request to update employee type with id: {} : {}", id, request);
 
-        EmployeeDto updatedEmployee = employeeService.updateEmployeeType(id, request);
-        EntityModel<EmployeeDto> entityModel = EntityModel.of(updatedEmployee);
-
-        return ResponseEntity.ok(entityModel);
+        employeeService.updateEmployeeType(id, request);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
@@ -90,5 +88,15 @@ public class EmployeeController {
         log.info("REST request to delete employee : {}", id);
         employeeService.deactivateEmployee(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/activation")
+    public ResponseEntity<EntityModel<EmployeeDto>> activateEmployee(@PathVariable UUID id) {
+        log.info("REST request to activate employee : {}", id);
+        EmployeeDto employeeDto = employeeService.activateEmployee(id);
+        EntityModel<EmployeeDto> entityModel = EntityModel.of(employeeDto,
+                linkTo(methodOn(EmployeeController.class).getEmployeeById(employeeDto.getId())).withSelfRel()
+        );
+        return ResponseEntity.ok(entityModel);
     }
 }

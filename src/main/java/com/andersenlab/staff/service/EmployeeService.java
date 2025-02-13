@@ -50,12 +50,11 @@ public interface EmployeeService {
     /**
      * Updates the employee's type (e.g., Worker, Manager, Executive).
      *
-     * @param id the UUID of the employee whose type is to be updated
+     * @param id      the UUID of the employee whose type is to be updated
      * @param request the {@link UpdateEmployeeType} containing the new employee type
-     * @return the updated {@link EmployeeDto} object with the new employee type
      * @throws ResourceNotFoundException if no employee with the given id is found
      */
-    EmployeeDto updateEmployeeType(UUID id, UpdateEmployeeType request);
+    void updateEmployeeType(UUID id, UpdateEmployeeType request);
 
     /**
      * Deactivates an employee by setting their 'active' status to false.
@@ -64,4 +63,12 @@ public interface EmployeeService {
      * @throws ResourceNotFoundException if no active employee with the given id is found
      */
     void deactivateEmployee(UUID id);
+
+    /**
+     * Activates an employee by setting their 'active' status to true.
+     *
+     * @param id the UUID of the employee to deactivate
+     * @throws ResourceNotFoundException if no active employee with the given id is found
+     */
+    EmployeeDto activateEmployee(UUID id);
 }

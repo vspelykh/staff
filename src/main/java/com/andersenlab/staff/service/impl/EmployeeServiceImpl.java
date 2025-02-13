@@ -46,8 +46,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional(readOnly = true)
     public EmployeeDto getEmployeeById(UUID id) {
-        return employeeMapper.toDto(employeeRepository.findByIdAndActiveIsTrue(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee with id:" + id + " not found")));
+        return employeeMapper.toDto(getEmployeeOrElseThrow(id));
     }
 
     @Override
@@ -62,8 +61,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public EmployeeDto updateEmployee(UUID id, UpdateEmployeeRequest request) {
-        Employee existingEmployee = employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
+        Employee existingEmployee = getEmployeeOrElseThrow(id);
 
         employeeMapper.updateEntityFromRequest(request, existingEmployee);
         Employee updatedEmployee = employeeRepository.save(existingEmployee);
@@ -78,35 +76,56 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public EmployeeDto updateEmployeeType(UUID id, UpdateEmployeeType request) {
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
+    public void updateEmployeeType(UUID id, UpdateEmployeeType request) {
+        Employee employee = getEmployeeOrElseThrow(id);
 
         EmployeeType previousType = employee.getType();
-        if (request.getType().equals(previousType)){
-            return employeeMapper.toDto(employee);
+        if (request.getType().equals(previousType)) {
+            return;
         }
-        employee.setType(request.getType());
 
         if (previousType.equals(EmployeeType.OTHER)) {
-         employeeDetailsRepository.deleteByEmployeeId(id);
+            EmployeeDetails employeeDetails = employeeDetailsRepository.findByEmployeeId(id).orElseThrow();
+            employeeDetailsRepository.deleteById(employeeDetails.getId());
         }
 
         if (EmployeeType.MANAGER.equals(previousType)) {
             managerService.removeAllSubordinates(id);
         }
 
-        return employeeMapper.toDto(employeeRepository.save(employee));
+        employeeRepository.updateEmployeeType(id, request.getType());
+        if (request.getType().equals(EmployeeType.OTHER)) {
+            employeeDetailsRepository.deleteByEmployeeId(id);
+            EmployeeDetails employeeDetails = EmployeeDetails
+                    .builder()
+                    .employee(employee)
+                    .description("")
+                    .build();
+            employeeDetailsRepository.save(employeeDetails);
+        }
     }
 
     @Override
     @Transactional
     public void deactivateEmployee(UUID id) {
-        Employee employeeToDeactivate = employeeRepository.findByIdAndActiveIsTrue(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee with id:" + id + " not found"));
+        Employee employeeToDeactivate = getEmployeeOrElseThrow(id);
 
         employeeToDeactivate.setActive(false);
         employeeRepository.save(employeeToDeactivate);
         log.info("Employee with id: {} deactivated", id);
+    }
+
+    @Override
+    public EmployeeDto activateEmployee(UUID id) {
+        Employee employeeToActivate = getEmployeeOrElseThrow(id);
+        employeeToActivate.setActive(true);
+        Employee updatedEmployee = employeeRepository.save(employeeToActivate);
+        log.info("Employee with id: {} activated", id);
+        return employeeMapper.toDto(updatedEmployee);
+    }
+
+    private Employee getEmployeeOrElseThrow(UUID id) {
+        return employeeRepository.findByIdAndActiveIsTrue(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
     }
 }

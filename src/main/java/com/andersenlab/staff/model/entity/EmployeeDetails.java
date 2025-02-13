@@ -3,6 +3,7 @@ package com.andersenlab.staff.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+@Builder
 @Entity
 @Getter
 @Setter
