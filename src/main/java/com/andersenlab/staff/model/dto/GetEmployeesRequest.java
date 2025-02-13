@@ -1,5 +1,6 @@
 package com.andersenlab.staff.model.dto;
 
+import com.andersenlab.staff.model.entity.EmployeeType;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
@@ -34,4 +35,6 @@ public class GetEmployeesRequest {
     private String lastName;
 
     private Boolean active;
+
+    private EmployeeType type;
 }

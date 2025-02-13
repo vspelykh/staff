@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.sql.Date;
 
 @Data
 @NoArgsConstructor
@@ -34,7 +34,7 @@ public class CreateEmployeeRequest {
 
     @PastOrPresent(message = "Hire date cannot be in the future")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date hireDate = new Date();
+    private Date hireDate = new Date(System.currentTimeMillis());
 
     @NotNull(message = "Employee type is required")
     private EmployeeType type;

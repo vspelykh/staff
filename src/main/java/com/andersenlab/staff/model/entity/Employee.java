@@ -43,9 +43,6 @@ public class Employee extends BaseEntity {
     @Column(name = "active", nullable = false)
     private boolean active;
 
-    @OneToOne(mappedBy = "employee", cascade = CascadeType.PERSIST)
-    private EmployeeDetails employeeDetails;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -53,11 +50,11 @@ public class Employee extends BaseEntity {
         return active == employee.active && Objects.equals(firstName, employee.firstName)
                 && Objects.equals(middleName, employee.middleName) && Objects.equals(lastName, employee.lastName)
                 && Objects.equals(birthDate, employee.birthDate) && Objects.equals(hireDate, employee.hireDate)
-                && type == employee.type && Objects.equals(employeeDetails, employee.employeeDetails);
+                && type == employee.type;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, middleName, lastName, birthDate, hireDate, type, active, employeeDetails);
+        return Objects.hash(firstName, middleName, lastName, birthDate, hireDate, type, active);
     }
 }

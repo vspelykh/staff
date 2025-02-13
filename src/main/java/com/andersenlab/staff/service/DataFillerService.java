@@ -1,7 +1,6 @@
 package com.andersenlab.staff.service;
 
 import com.andersenlab.staff.model.entity.Employee;
-import com.andersenlab.staff.model.entity.EmployeeType;
 import com.andersenlab.staff.repository.EmployeeRepository;
 import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +33,7 @@ public class DataFillerService {
 
             java.util.Date hireDate = faker.date().past(3650, java.util.concurrent.TimeUnit.DAYS);
             employee.setHireDate(new Date(hireDate.getTime()));
-            employee.setType(EmployeeType.WORKER);
+            employee.setActive(true);
             employees.add(employee);
         }
         employeeRepository.saveAll(employees);

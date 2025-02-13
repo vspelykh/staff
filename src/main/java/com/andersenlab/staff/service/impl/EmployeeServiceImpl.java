@@ -7,6 +7,7 @@ import com.andersenlab.staff.model.entity.EmployeeDetails;
 import com.andersenlab.staff.model.entity.EmployeeType;
 import com.andersenlab.staff.repository.EmployeeDetailsRepository;
 import com.andersenlab.staff.repository.EmployeeRepository;
+import com.andersenlab.staff.service.EmployeeFactory;
 import com.andersenlab.staff.service.EmployeeService;
 import com.andersenlab.staff.service.ManagerService;
 import com.andersenlab.staff.service.mapper.EmployeeMapper;
@@ -28,6 +29,7 @@ import java.util.UUID;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final ManagerService managerService;
+    private final EmployeeFactory employeeFactory;
     private final EmployeeRepository employeeRepository;
     private final EmployeeDetailsRepository employeeDetailsRepository;
     private final EmployeeMapper employeeMapper;
@@ -51,15 +53,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public EmployeeDto createEmployee(CreateEmployeeRequest request) {
-        Employee employee = employeeMapper.toEntity(request);
-
-        if (request.getType().equals(EmployeeType.OTHER)) {
-            EmployeeDetails employeeDetails = employee.getEmployeeDetails();
-            log.info("Set employee details: {}, request: {}", employeeDetails, request);
-            employeeDetails.setEmployee(employee);
-        }
-
-        return employeeMapper.toDto(employeeRepository.save(employee));
+        Employee employee = employeeFactory.createEmployee(request);
+        Employee savedEmployee = employeeRepository.save(employee);
+        log.info("Employee created: {}", savedEmployee);
+        return employeeMapper.toDto(savedEmployee);
     }
 
     @Override
@@ -70,6 +67,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         employeeMapper.updateEntityFromRequest(request, existingEmployee);
         Employee updatedEmployee = employeeRepository.save(existingEmployee);
+
+        if (updatedEmployee.getType().equals(EmployeeType.OTHER)) {
+            EmployeeDetails employeeDetails = employeeDetailsRepository.findById(id).orElseThrow(
+                    () -> new ResourceNotFoundException("Employee details not found with id: " + id));
+            employeeDetails.setDescription(request.getDescription());
+        }
         return employeeMapper.toDto(updatedEmployee);
     }
 
@@ -80,12 +83,13 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
 
         EmployeeType previousType = employee.getType();
+        if (request.getType().equals(previousType)){
+            return employeeMapper.toDto(employee);
+        }
         employee.setType(request.getType());
-        EmployeeDetails employeeDetails = employee.getEmployeeDetails();
-        if (request.getType().equals(EmployeeType.WORKER) && employeeDetails != null) {
-            log.info("Delete employee details for employee with id: {}", id);
-            employeeDetailsRepository.delete(employeeDetails);
-            employee.setEmployeeDetails(null);
+
+        if (previousType.equals(EmployeeType.OTHER)) {
+         employeeDetailsRepository.deleteByEmployeeId(id);
         }
 
         if (EmployeeType.MANAGER.equals(previousType)) {

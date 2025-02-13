@@ -6,7 +6,10 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.springframework.data.jpa.domain.Specification;
 
 @Data
@@ -18,6 +21,7 @@ public class EmployeeSpecification implements Specification<Employee> {
     private static final String LAST_NAME = "lastName";
     private static final String HIRE_DATE = "hireDate";
     private static final String ACTIVE = "active";
+    private static final String TYPE = "type";
 
     private GetEmployeesRequest request;
 
@@ -28,10 +32,12 @@ public class EmployeeSpecification implements Specification<Employee> {
         predicate = applyFirstNameFilter(root, criteriaBuilder, predicate);
         predicate = applyLastNameFilter(root, criteriaBuilder, predicate);
         predicate = applyActiveFilter(root, criteriaBuilder, predicate);
+        predicate = applyTypeFilter(root, criteriaBuilder, predicate);
         applySorting(root, query, criteriaBuilder);
 
         return predicate;
     }
+
 
     private Predicate applyFirstNameFilter(Root<Employee> root, CriteriaBuilder criteriaBuilder, Predicate predicate) {
         if (request.getFirstName() != null) {
@@ -57,6 +63,13 @@ public class EmployeeSpecification implements Specification<Employee> {
             return criteriaBuilder.and(predicate,
                     criteriaBuilder.equal(root.get(ACTIVE), Boolean.TRUE));
         }
+    }
+
+    private Predicate applyTypeFilter(Root<Employee> root, CriteriaBuilder criteriaBuilder, Predicate predicate) {
+        if (request.getType() != null) {
+            return criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get(TYPE), request.getType()));
+        }
+        return predicate;
     }
 
     private void applySorting(Root<Employee> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {

@@ -8,4 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface EmployeeDetailsRepository extends JpaRepository<EmployeeDetails, UUID> {
+
+    void deleteByEmployeeId(UUID employeeId);
 }

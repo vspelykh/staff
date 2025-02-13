@@ -1,9 +1,12 @@
 package com.andersenlab.staff.model.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 
-import java.util.*;
+import java.util.UUID;
 
 @Getter
 @Setter

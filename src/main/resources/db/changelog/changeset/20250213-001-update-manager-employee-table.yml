@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: 007-update-manager-employee-table
+      author: v.pelykh
+      changes:
+        - addDefaultValue:
+            tableName: manager_employee
+            columnName: assigned_date
+            defaultValueComputed: "CURRENT_TIMESTAMP"
+        - addDefaultValue:
+            tableName: manager_employee
+            columnName: id
+            defaultValueComputed: "gen_random_uuid()"
+        - addUniqueConstraint:
+            tableName: manager_employee
+            columnNames: manager_id, employee_id
+            constraintName: uq_manager_employee

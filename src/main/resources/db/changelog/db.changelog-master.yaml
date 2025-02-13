@@ -11,3 +11,5 @@ databaseChangeLog:
       file: db/changelog/changeset/20250205-001-add-active-field-to-employee.yml
   - include:
       file: db/changelog/changeset/20250205-002-create-employee-index.yml
+  - include:
+      file: db/changelog/changeset/20250213-001-update-manager-employee-table.yml
