@@ -69,7 +69,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee updatedEmployee = employeeRepository.save(existingEmployee);
 
         if (updatedEmployee.getType().equals(EmployeeType.OTHER)) {
-            EmployeeDetails employeeDetails = employeeDetailsRepository.findById(id).orElseThrow(
+            EmployeeDetails employeeDetails = employeeDetailsRepository.findByEmployeeId(id).orElseThrow(
                     () -> new ResourceNotFoundException("Employee details not found with id: " + id));
             employeeDetails.setDescription(request.getDescription());
         }
