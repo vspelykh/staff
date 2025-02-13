@@ -1,5 +1,6 @@
-package com.andersenlab.staff.controller;
+package com.andersenlab.staff.controller.impl;
 
+import com.andersenlab.staff.controller.EmployeeApi;
 import com.andersenlab.staff.model.assembler.EmployeeModelAssembler;
 import com.andersenlab.staff.model.dto.*;
 import com.andersenlab.staff.service.EmployeeService;
@@ -22,7 +23,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping("/api/v1/employees")
 @RequiredArgsConstructor
-public class EmployeeController {
+public class EmployeeController implements EmployeeApi {
 
     private final EmployeeService employeeService;
     private final EmployeeModelAssembler employeeModelAssembler;

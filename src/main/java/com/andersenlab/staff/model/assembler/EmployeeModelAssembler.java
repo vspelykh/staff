@@ -1,6 +1,6 @@
 package com.andersenlab.staff.model.assembler;
 
-import com.andersenlab.staff.controller.EmployeeController;
+import com.andersenlab.staff.controller.impl.EmployeeController;
 import com.andersenlab.staff.model.dto.EmployeeDto;
 import lombok.NonNull;
 import org.springframework.hateoas.EntityModel;

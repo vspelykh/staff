@@ -1,5 +1,6 @@
-package com.andersenlab.staff.controller;
+package com.andersenlab.staff.controller.impl;
 
+import com.andersenlab.staff.controller.ManagerApi;
 import com.andersenlab.staff.model.dto.EmployeeDto;
 import com.andersenlab.staff.model.dto.ManagerDto;
 import com.andersenlab.staff.service.ManagerService;
@@ -20,7 +21,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping("/api/v1/managers")
 @RequiredArgsConstructor
-public class ManagerController {
+public class ManagerController implements ManagerApi {
 
     private final ManagerService managerService;
 

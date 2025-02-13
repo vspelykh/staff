@@ -1,4 +1,4 @@
-package com.andersenlab.staff.controller;
+package com.andersenlab.staff.controller.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;

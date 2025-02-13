@@ -1,4 +1,4 @@
-package com.andersenlab.staff.controller;
+package com.andersenlab.staff.controller.impl;
 
 import com.andersenlab.staff.service.DataFillerService;
 import lombok.RequiredArgsConstructor;
