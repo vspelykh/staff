@@ -1,5 +1,7 @@
 package com.andersenlab.staff.controller.impl;
 
+import com.andersenlab.staff.config.security.AdminAccess;
+import com.andersenlab.staff.config.security.AuthAccess;
 import com.andersenlab.staff.controller.ManagerApi;
 import com.andersenlab.staff.model.dto.EmployeeDto;
 import com.andersenlab.staff.model.dto.ManagerDto;
@@ -25,6 +27,7 @@ public class ManagerController implements ManagerApi {
 
     private final ManagerService managerService;
 
+    @AuthAccess
     @GetMapping("/{managerId}/subordinates")
     public CollectionModel<EmployeeDto> getSubordinates(@PathVariable UUID managerId) {
         log.info("REST request to get subordinates for manager : {}", managerId);
@@ -38,6 +41,7 @@ public class ManagerController implements ManagerApi {
         );
     }
 
+    @AuthAccess
     @GetMapping("/{managerId}")
     public ResponseEntity<EntityModel<ManagerDto>> getManager(@PathVariable UUID managerId) {
         log.info("REST request to get manager : {}", managerId);
@@ -49,6 +53,7 @@ public class ManagerController implements ManagerApi {
         return ResponseEntity.ok(entityModel);
     }
 
+    @AdminAccess
     @PostMapping(("/{managerId}/subordinates/{employeeId}"))
     public ResponseEntity<EntityModel<ManagerDto>> assignSubordinate(
             @PathVariable UUID managerId,
@@ -63,6 +68,7 @@ public class ManagerController implements ManagerApi {
         return ResponseEntity.ok(entityModel);
     }
 
+    @AdminAccess
     @DeleteMapping("/{managerId}/subordinates/{employeeId}")
     public ResponseEntity<Void> removeSubordinate(@PathVariable UUID managerId, @PathVariable UUID employeeId) {
         log.info("REST request to remove subordinate for manager, employeeId : {}", employeeId);

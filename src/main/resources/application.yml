@@ -2,6 +2,9 @@ server:
   port: ${SERVER_PORT}
 
 spring:
+  profiles:
+    default: test
+
   datasource:
     url: ${DB_URL}
     username: ${DB_USER}
@@ -9,6 +12,19 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
+
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: ${SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_CLIENT_ID}
+            client-secret: ${SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_CLIENT_SECRET}
+            scope: ${SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_SCOPE}
+            authorization-grant-type: ${SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_AUTHORIZATION_GRANT_TYPE}
+        provider:
+          keycloak:
+            issuer-uri: ${SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI}
 
   jpa:
     hibernate:
@@ -28,5 +44,7 @@ spring:
         c3p0:
           min_size: 5
           max_size: 20
-  profiles:
-    default: test
+
+keycloak:
+  jwt:
+    jwk-set-uri: ${KEYCLOAK_JWT_JWK_SET_URI}

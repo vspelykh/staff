@@ -1,5 +1,7 @@
 package com.andersenlab.staff.controller.impl;
 
+import com.andersenlab.staff.config.security.AdminAccess;
+import com.andersenlab.staff.config.security.AuthAccess;
 import com.andersenlab.staff.controller.EmployeeApi;
 import com.andersenlab.staff.model.assembler.EmployeeModelAssembler;
 import com.andersenlab.staff.model.dto.*;
@@ -28,6 +30,7 @@ public class EmployeeController implements EmployeeApi {
     private final EmployeeService employeeService;
     private final EmployeeModelAssembler employeeModelAssembler;
 
+    @AuthAccess
     @GetMapping
     public PagedModel<EmployeeDto> getAllEmployees(
             @Valid GetEmployeesRequest request,
@@ -38,6 +41,7 @@ public class EmployeeController implements EmployeeApi {
         return assembler.toModel(employees, employeeModelAssembler);
     }
 
+    @AuthAccess
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<EmployeeDto>> getEmployeeById(@PathVariable UUID id) {
         log.info("REST request to get employee : {}", id);
@@ -50,6 +54,7 @@ public class EmployeeController implements EmployeeApi {
         return ResponseEntity.ok(entityModel);
     }
 
+    @AdminAccess
     @PostMapping
     public ResponseEntity<EntityModel<EmployeeDto>> createEmployee(@RequestBody CreateEmployeeRequest request) {
         log.info("REST request to create employee : {}", request);
@@ -64,6 +69,7 @@ public class EmployeeController implements EmployeeApi {
                 .body(entityModel);
     }
 
+    @AdminAccess
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<EmployeeDto>> updateEmployee(
             @PathVariable UUID id, @RequestBody UpdateEmployeeRequest request) {
@@ -75,6 +81,7 @@ public class EmployeeController implements EmployeeApi {
         return ResponseEntity.ok().body(entityModel);
     }
 
+    @AdminAccess
     @PatchMapping("/{id}")
     public ResponseEntity<EntityModel<EmployeeDto>> changeEmployeeType(
             @PathVariable UUID id, @RequestBody UpdateEmployeeType request) {
@@ -84,6 +91,7 @@ public class EmployeeController implements EmployeeApi {
         return ResponseEntity.ok().build();
     }
 
+    @AdminAccess
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployeeById(@PathVariable UUID id) {
         log.info("REST request to delete employee : {}", id);
@@ -91,6 +99,7 @@ public class EmployeeController implements EmployeeApi {
         return ResponseEntity.noContent().build();
     }
 
+    @AdminAccess
     @PostMapping("/{id}/activation")
     public ResponseEntity<EntityModel<EmployeeDto>> activateEmployee(@PathVariable UUID id) {
         log.info("REST request to activate employee : {}", id);

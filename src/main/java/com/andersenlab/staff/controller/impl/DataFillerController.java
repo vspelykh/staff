@@ -1,5 +1,6 @@
 package com.andersenlab.staff.controller.impl;
 
+import com.andersenlab.staff.config.security.UserAccess;
 import com.andersenlab.staff.service.DataFillerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
@@ -17,6 +18,7 @@ public class DataFillerController {
 
     private final DataFillerService dataFillerService;
 
+    @UserAccess
     @PostMapping("/{numberOfEmployees}")
     public ResponseEntity<String> fillDatabase(@PathVariable int numberOfEmployees) {
         dataFillerService.fillDatabaseWithFakeData(numberOfEmployees);

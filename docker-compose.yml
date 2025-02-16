@@ -1,6 +1,46 @@
-version: '3.9'
+version: '3.8'
 
 services:
+  postgres_key:
+    image: postgres:latest
+    container_name: postgres_key
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres_key
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_key:/var/lib/postgresql/datas
+    networks:
+      - app_network
+
+  keycloak_web:
+    image: quay.io/keycloak/keycloak:23.0.7
+    container_name: keycloak_web
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres_key:5432/postgres_key
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: password
+
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+
+      KC_LOG_LEVEL: info
+      KC_METRICS_ENABLED: true
+      KC_HEALTH_ENABLED: true
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: start-dev
+    depends_on:
+      - postgres_key
+    ports:
+      - "8080:8080"
+    networks:
+      - app_network
+
   postgres:
     image: postgres:latest
     container_name: staff_postgres
@@ -9,33 +49,16 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: staff_db
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - app_network
 
-#  keycloak:
-#    image: quay.io/keycloak/keycloak:23.0
-#    container_name: keycloak
-#    command: ["start-dev"]
-#    environment:
-#      KC_DB: postgres
-#      KC_DB_URL_HOST: postgres
-#      KC_DB_URL_DATABASE: employee_db
-#      KC_DB_USERNAME: user
-#      KC_DB_PASSWORD: password
-#      KEYCLOAK_ADMIN: admin
-#      KEYCLOAK_ADMIN_PASSWORD: admin
-#    ports:
-#      - "8081:8081"
-#    depends_on:
-#      - postgres
+volumes:
+  postgres_key:
+  postgres_data:
 
 networks:
   app_network:
     driver: bridge
-
-volumes:
-  postgres_data:
-    driver: local
