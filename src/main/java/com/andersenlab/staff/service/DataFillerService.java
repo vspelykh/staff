@@ -4,8 +4,10 @@ import com.andersenlab.staff.model.entity.Employee;
 import com.andersenlab.staff.repository.EmployeeRepository;
 import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -19,6 +21,8 @@ public class DataFillerService {
     private final EmployeeRepository employeeRepository;
     private final Faker faker = new Faker();
 
+    @Transactional
+    @CacheEvict(value = "employees", allEntries = true)
     public void fillDatabaseWithFakeData(int numberOfEmployees) {
         List<Employee> employees = new ArrayList<>();
 

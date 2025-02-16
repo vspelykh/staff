@@ -1,10 +1,13 @@
 package com.andersenlab.staff.model.dto;
 
 import com.andersenlab.staff.model.entity.EmployeeType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import org.springframework.hateoas.Links;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.Objects;
 import java.util.UUID;
@@ -16,7 +19,7 @@ import java.util.UUID;
 @ToString
 @Builder
 @Schema(description = "Data transfer object for Employee")
-public class EmployeeDto extends RepresentationModel<EmployeeDto> {
+public class EmployeeDto extends RepresentationModel<EmployeeDto> implements Serializable {
 
     @Schema(description = "Unique identifier of the employee", example = "123e4567-e89b-12d3-a456-426614174000")
     private UUID id;
@@ -44,6 +47,9 @@ public class EmployeeDto extends RepresentationModel<EmployeeDto> {
 
     @Schema(description = "Employee's active status", example = "true")
     private boolean active;
+
+    @JsonIgnore
+    private Links links;
 
     @Override
     public boolean equals(Object o) {

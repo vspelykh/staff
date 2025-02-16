@@ -45,6 +45,25 @@ spring:
           min_size: 5
           max_size: 20
 
+  cache:
+    type: redis
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+      password:
+      timeout: 60000
+      lettuce:
+        pool:
+          max-active: 10
+          max-idle: 5
+          min-idle: 2
+          time-between-eviction-runs: 60000
+
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
 keycloak:
   jwt:
     jwk-set-uri: ${KEYCLOAK_JWT_JWK_SET_URI}
