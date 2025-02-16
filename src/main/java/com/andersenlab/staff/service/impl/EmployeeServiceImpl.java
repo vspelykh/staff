@@ -1,6 +1,5 @@
 package com.andersenlab.staff.service.impl;
 
-import com.andersenlab.staff.model.dto.RestPage;
 import com.andersenlab.staff.exception.ResourceNotFoundException;
 import com.andersenlab.staff.model.dto.*;
 import com.andersenlab.staff.model.entity.Employee;
@@ -17,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -67,7 +67,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"employees", "employee"}, key = "#id")
+    @Caching(evict = {@CacheEvict(value = "employees", allEntries = true), @CacheEvict(value = "employee", key = "#id")})
     public EmployeeDto updateEmployee(UUID id, UpdateEmployeeRequest request) {
         Employee existingEmployee = getEmployeeOrElseThrow(id);
         employeeMapper.updateEntityFromRequest(request, existingEmployee);
@@ -83,7 +83,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"employees", "employee"}, key = "#id")
+    @Caching(evict = {@CacheEvict(value = "employees", allEntries = true), @CacheEvict(value = "employee", key = "#id")})
     public void updateEmployeeType(UUID id, UpdateEmployeeType request) {
         Employee employee = getEmployeeOrElseThrow(id);
         EmployeeType previousType = employee.getType();
@@ -114,7 +114,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"employees", "employee"}, key = "#id")
+    @Caching(evict = {@CacheEvict(value = "employees", allEntries = true), @CacheEvict(value = "employee", key = "#id")})
     public void deactivateEmployee(UUID id) {
         Employee employeeToDeactivate = getEmployeeOrElseThrow(id);
         employeeToDeactivate.setActive(false);
@@ -124,7 +124,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"employees", "employee"}, key = "#id")
+    @Caching(evict = {@CacheEvict(value = "employees", allEntries = true), @CacheEvict(value = "employee", key = "#id")})
     public EmployeeDto activateEmployee(UUID id) {
         Employee employeeToActivate = getEmployeeOrElseThrow(id);
         employeeToActivate.setActive(true);
