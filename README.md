@@ -1,4 +1,5 @@
 # **Employee Management System**
+![img.png](img.png)
 
 ## **Overview**
 
