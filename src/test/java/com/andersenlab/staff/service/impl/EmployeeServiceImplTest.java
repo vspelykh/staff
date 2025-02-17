@@ -41,6 +41,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class EmployeeServiceImplTest {
 
+    private final UUID employeeId = UUID.randomUUID();
+
     @Mock
     private EmployeeRepository employeeRepository;
 
@@ -156,7 +158,6 @@ class EmployeeServiceImplTest {
 
     @Test
     void givenEmployeeExists_whenGetEmployeeById_thenReturnEmployeeDto() {
-        UUID employeeId = UUID.randomUUID();
         employee.setId(employeeId);
         when(employeeRepository.findByIdAndActiveIsTrue(employeeId)).thenReturn(Optional.of(employee));
 
@@ -169,7 +170,6 @@ class EmployeeServiceImplTest {
 
     @Test
     void givenEmployeeDoesNotExist_whenGetEmployeeById_thenThrowResourceNotFoundException() {
-        UUID employeeId = UUID.randomUUID();
         when(employeeRepository.findByIdAndActiveIsTrue(employeeId)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> employeeService.getEmployeeById(employeeId));
@@ -200,7 +200,6 @@ class EmployeeServiceImplTest {
 
     @Test
     void givenValidUpdateRequest_whenUpdateEmployee_thenSaveUpdatedEmployee() {
-        UUID employeeId = UUID.randomUUID();
         when(employeeRepository.findByIdAndActiveIsTrue(employeeId)).thenReturn(Optional.of(employee));
         when(employeeRepository.save(any(Employee.class))).thenReturn(employee);
 
@@ -247,7 +246,6 @@ class EmployeeServiceImplTest {
 
     @Test
     void givenEmployeeExists_whenDeactivateEmployee_thenEmployeeDeactivated() {
-        UUID employeeId = UUID.randomUUID();
         employee.setId(employeeId);
         when(employeeRepository.findByIdAndActiveIsTrue(employeeId)).thenReturn(Optional.of(employee));
 
@@ -259,7 +257,6 @@ class EmployeeServiceImplTest {
 
     @Test
     void givenEmployeeDoesNotExist_whenDeactivateEmployee_thenThrowResourceNotFoundException() {
-        UUID employeeId = UUID.randomUUID();
         when(employeeRepository.findByIdAndActiveIsTrue(employeeId)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> employeeService.deactivateEmployee(employeeId));
@@ -339,5 +336,30 @@ class EmployeeServiceImplTest {
         verify(employeeRepository, never()).updateEmployeeType(any(), any());
         verify(managerService, never()).removeAllSubordinates(any());
         verify(employeeDetailsRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void givenEmployeeExists_whenActivateEmployee_thenReturnActivatedEmployeeDto() {
+        when(employeeRepository.findByIdAndActiveIsTrue(employeeId)).thenReturn(Optional.of(employee));
+        when(employeeRepository.save(any(Employee.class))).thenReturn(employee);
+
+        EmployeeDto employeeDto = new EmployeeDto();
+        when(employeeMapper.toDto(employee)).thenReturn(employeeDto);
+
+        employeeService.activateEmployee(employeeId);
+
+        verify(employeeRepository, times(1)).save(employee);
+        verify(employeeRepository, times(1)).findByIdAndActiveIsTrue(employeeId);
+    }
+
+    @Test
+    void givenEmployeeDoesNotExist_whenActivateEmployee_thenThrowResourceNotFoundException() {
+        when(employeeRepository.findByIdAndActiveIsTrue(employeeId)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> employeeService.activateEmployee(employeeId));
+
+        verify(employeeRepository, times(1)).findByIdAndActiveIsTrue(employeeId);
+        verify(employeeRepository, never()).save(any(Employee.class));
+        verify(employeeMapper, never()).toDto(any(Employee.class));
     }
 }
