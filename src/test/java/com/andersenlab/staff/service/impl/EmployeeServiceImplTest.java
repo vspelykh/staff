@@ -1,11 +1,18 @@
 package com.andersenlab.staff.service.impl;
 
 import com.andersenlab.staff.exception.ResourceNotFoundException;
-import com.andersenlab.staff.model.dto.*;
+import com.andersenlab.staff.model.dto.CreateEmployeeRequest;
+import com.andersenlab.staff.model.dto.EmployeeDto;
+import com.andersenlab.staff.model.dto.GetEmployeesRequest;
+import com.andersenlab.staff.model.dto.UpdateEmployeeRequest;
+import com.andersenlab.staff.model.dto.UpdateEmployeeType;
 import com.andersenlab.staff.model.entity.Employee;
+import com.andersenlab.staff.model.entity.EmployeeDetails;
 import com.andersenlab.staff.model.entity.EmployeeType;
+import com.andersenlab.staff.repository.EmployeeDetailsRepository;
 import com.andersenlab.staff.repository.EmployeeRepository;
 import com.andersenlab.staff.service.EmployeeFactory;
+import com.andersenlab.staff.service.ManagerService;
 import com.andersenlab.staff.service.mapper.EmployeeMapper;
 import com.andersenlab.staff.service.specification.EmployeeSpecification;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +44,12 @@ class EmployeeServiceImplTest {
     @Mock
     private EmployeeRepository employeeRepository;
 
+    @Mock
+    private EmployeeDetailsRepository employeeDetailsRepository;
+
+    @Mock
+    private ManagerService managerService;
+
     @Spy
     private EmployeeFactory employeeFactory = new EmployeeFactory();
 
@@ -52,6 +65,7 @@ class EmployeeServiceImplTest {
     private Employee employee;
     private Specification<Employee> spec;
     private Pageable pageable;
+    private UpdateEmployeeType updateTypeRequest;
 
     @BeforeEach
     void setUp() {
@@ -86,6 +100,8 @@ class EmployeeServiceImplTest {
                 .hireDate(new Date(12345657))
                 .description("Updated description")
                 .build();
+
+        updateTypeRequest = new UpdateEmployeeType(EmployeeType.MANAGER);
 
         spec = new EmployeeSpecification(request);
 
@@ -218,7 +234,7 @@ class EmployeeServiceImplTest {
     @Test
     void givenNonExistentEmployee_whenUpdateEmployeeType_thenThrowException() {
         UUID nonExistentId = UUID.randomUUID();
-        UpdateEmployeeType updateTypeRequest = new UpdateEmployeeType(EmployeeType.WORKER);
+        updateTypeRequest = new UpdateEmployeeType(EmployeeType.WORKER);
 
         when(employeeRepository.findByIdAndActiveIsTrue(nonExistentId)).thenReturn(Optional.empty());
 
@@ -249,5 +265,79 @@ class EmployeeServiceImplTest {
         assertThrows(ResourceNotFoundException.class, () -> employeeService.deactivateEmployee(employeeId));
 
         verify(employeeRepository, never()).save(any());
+    }
+
+    @Test
+    void givenEmployeeTypeNotChanged_whenUpdateEmployeeType_thenNoChangesMade() {
+        employee.setType(EmployeeType.WORKER);
+        updateTypeRequest.setType(EmployeeType.WORKER);
+
+        when(employeeRepository.findByIdAndActiveIsTrue(employee.getId())).thenReturn(Optional.of(employee));
+
+        employeeService.updateEmployeeType(employee.getId(), updateTypeRequest);
+
+        verify(employeeRepository, never()).updateEmployeeType(any(), any());
+        verify(managerService, never()).removeAllSubordinates(any());
+        verify(employeeDetailsRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void givenEmployeeTypeChangedFromOther_whenUpdateEmployeeType_thenDeleteEmployeeDetails() {
+        employee.setType(EmployeeType.OTHER);
+
+        when(employeeRepository.findByIdAndActiveIsTrue(employee.getId())).thenReturn(Optional.of(employee));
+
+        EmployeeDetails employeeDetails = EmployeeDetails.builder()
+                .employee(employee)
+                .description("Some description")
+                .build();
+        when(employeeDetailsRepository.findByEmployeeId(employee.getId())).thenReturn(Optional.of(employeeDetails));
+
+        updateTypeRequest.setType(EmployeeType.WORKER);
+
+        employeeService.updateEmployeeType(employee.getId(), updateTypeRequest);
+
+        verify(employeeDetailsRepository, times(1)).deleteById(employeeDetails.getId());
+    }
+
+    @Test
+    void givenEmployeeTypeChangedFromManager_whenUpdateEmployeeType_thenRemoveAllSubordinates() {
+        employee.setType(EmployeeType.MANAGER);
+
+        when(employeeRepository.findByIdAndActiveIsTrue(employee.getId())).thenReturn(Optional.of(employee));
+
+        updateTypeRequest.setType(EmployeeType.WORKER);
+
+        employeeService.updateEmployeeType(employee.getId(), updateTypeRequest);
+
+        verify(managerService, times(1)).removeAllSubordinates(employee.getId());
+    }
+
+    @Test
+    void givenEmployeeTypeChangedToOther_whenUpdateEmployeeType_thenCreateEmployeeDetails() {
+        employee.setType(EmployeeType.WORKER);
+
+        when(employeeRepository.findByIdAndActiveIsTrue(employee.getId())).thenReturn(Optional.of(employee));
+
+        updateTypeRequest.setType(EmployeeType.OTHER);
+
+        employeeService.updateEmployeeType(employee.getId(), updateTypeRequest);
+
+        verify(employeeDetailsRepository, times(1)).deleteByEmployeeId(employee.getId());
+        verify(employeeDetailsRepository, times(1)).save(any(EmployeeDetails.class));
+    }
+
+    @Test
+    void givenNonExistentEmployee_whenUpdateEmployeeType_thenThrowResourceNotFoundException() {
+        UUID nonExistentId = UUID.randomUUID();
+
+        when(employeeRepository.findByIdAndActiveIsTrue(nonExistentId)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> employeeService.updateEmployeeType(nonExistentId, updateTypeRequest));
+
+        verify(employeeRepository, times(1)).findByIdAndActiveIsTrue(nonExistentId);
+        verify(employeeRepository, never()).updateEmployeeType(any(), any());
+        verify(managerService, never()).removeAllSubordinates(any());
+        verify(employeeDetailsRepository, never()).deleteById(any());
     }
 }
