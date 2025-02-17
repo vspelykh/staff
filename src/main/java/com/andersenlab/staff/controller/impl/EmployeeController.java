@@ -4,7 +4,11 @@ import com.andersenlab.staff.config.security.AdminAccess;
 import com.andersenlab.staff.config.security.AuthAccess;
 import com.andersenlab.staff.controller.EmployeeApi;
 import com.andersenlab.staff.model.assembler.EmployeeModelAssembler;
-import com.andersenlab.staff.model.dto.*;
+import com.andersenlab.staff.model.dto.CreateEmployeeRequest;
+import com.andersenlab.staff.model.dto.EmployeeDto;
+import com.andersenlab.staff.model.dto.GetEmployeesRequest;
+import com.andersenlab.staff.model.dto.UpdateEmployeeRequest;
+import com.andersenlab.staff.model.dto.UpdateEmployeeType;
 import com.andersenlab.staff.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +37,7 @@ public class EmployeeController implements EmployeeApi {
 
     @AuthAccess
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public PagedModel<EmployeeDto> getAllEmployees(
             @Valid GetEmployeesRequest request,
             PagedResourcesAssembler<EmployeeDto> assembler) {

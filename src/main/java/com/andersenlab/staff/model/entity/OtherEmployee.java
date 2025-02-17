@@ -4,7 +4,11 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -29,11 +33,11 @@ public class OtherEmployee extends Employee {
         if (!(o instanceof OtherEmployee employee)) return false;
         if (!super.equals(o)) return false;
 
-        return Objects.equals(getId(), employee.getId());
+        return Objects.equals(details, employee.details);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getId());
+        return Objects.hash(super.hashCode(), details);
     }
 }

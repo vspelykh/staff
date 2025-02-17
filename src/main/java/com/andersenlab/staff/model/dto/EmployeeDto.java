@@ -3,7 +3,12 @@ package com.andersenlab.staff.model.dto;
 import com.andersenlab.staff.model.entity.EmployeeType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.hateoas.Links;
 import org.springframework.hateoas.RepresentationModel;
 

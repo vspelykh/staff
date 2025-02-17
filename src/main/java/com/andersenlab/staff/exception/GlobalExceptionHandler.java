@@ -5,12 +5,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,6 @@ import java.util.Objects;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(ConstraintViolationException ex) {
         ErrorResponse errorResponse = new ErrorResponse(
                 ex.getMessage(),
@@ -30,7 +29,6 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BindException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleBindException(BindException ex) {
         ErrorResponse errorResponse = new ErrorResponse(
                 ex.getMessage(),
@@ -40,7 +38,6 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse(
                 ex.getMessage(),
@@ -50,7 +47,6 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
         ErrorResponse errorResponse = new ErrorResponse(
                 "An unexpected error occurred " + ex.getMessage(),
@@ -60,7 +56,6 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleJsonParseException(HttpMessageNotReadableException ex) {
         ErrorResponse errorResponse = new ErrorResponse(
                 "Invalid request: " + ex.getMostSpecificCause().getMessage(),
@@ -70,7 +65,6 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
         List<String> errorMessages = new ArrayList<>();
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
@@ -88,5 +82,11 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse =
                 new ErrorResponse(Objects.requireNonNull(ex.getRootCause()).getMessage(), HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAuthorizationException(AuthorizationDeniedException e) {
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.FORBIDDEN.value());
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 }

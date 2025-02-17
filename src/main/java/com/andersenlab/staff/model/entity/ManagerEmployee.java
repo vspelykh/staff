@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -16,6 +17,7 @@ import java.util.UUID;
 @ToString
 @Table(name = "manager_employee")
 public class ManagerEmployee {
+
     @Id
     @Column(name = "id", nullable = false)
     private UUID id;
@@ -36,4 +38,17 @@ public class ManagerEmployee {
     @Column(name = "assigned_date", nullable = false)
     private Instant assignedDate;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ManagerEmployee employee1)) return false;
+        return Objects.equals(manager, employee1.manager)
+                && Objects.equals(employee, employee1.employee)
+                && Objects.equals(assignedDate, employee1.assignedDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(manager, employee, assignedDate);
+    }
 }

@@ -39,7 +39,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "employees", key = "#request.page + '-' + #request.size")
+    @Cacheable(value = "employees", key = "#request.page + '-' + #request.size + '-' + #request.sortBy + '-' " +
+            "+ #request.firstName + '-' + #request.lastName + '-' + #request.active + '-' + #request.type")
     public RestPage<EmployeeDto> getAllEmployees(GetEmployeesRequest request) {
         Specification<Employee> spec = new EmployeeSpecification(request);
         Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
