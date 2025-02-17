@@ -1,7 +1,10 @@
 server:
   port: ${SERVER_PORT}
 
+
 spring:
+  application:
+    name: staff-app
   profiles:
     default: test
 
@@ -67,3 +70,23 @@ spring:
 keycloak:
   jwt:
     jwk-set-uri: ${KEYCLOAK_JWT_JWK_SET_URI}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env,threaddump, prometheus
+  endpoint:
+    prometheus:
+      enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+        step: 10s
+
+
+logging:
+  level:
+    org.springframework.web: INFO
+    org.springframework.boot.actuate: DEBUG
